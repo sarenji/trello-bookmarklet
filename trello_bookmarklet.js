@@ -25,9 +25,10 @@
 **creator email?:**\n\
 **etc:**\n\
 \n\
-**copy we've written**:;\n\
+**copy we've written**:\n\
 ```\n\
 PASTE COPY BETWEEN THE MARKS HERE\n\
+```\n\
 \n\
 don't forget to:\n\
 \n\
@@ -94,7 +95,7 @@ don't forget to:\n\
       background: "#000",
       opacity: .75,
       "z-index": 1e4,
-      position: "absolute",
+      position: "fixed",
       left: 0,
       top: 0,
       right: 0,
