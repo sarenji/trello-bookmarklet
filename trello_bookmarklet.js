@@ -16,8 +16,7 @@
     var name = readMeta('og:title') || 'Unknown page';
     var desc = "[" + name + "](" + readMeta('og:url') + ")\n\
 ==========\n\
-\n\
-" + getProjectBlurb() + "\n\
+\n" + getProjectBlurb() + "\n\
 ----------\n\
 \n\
 **description**:\n\
@@ -28,9 +27,9 @@
 \n\
 **copy we've written**:;\n\
 ```\n\
-PASTE COPY BETWEEN THE MARKS HERE
+PASTE COPY BETWEEN THE MARKS HERE\n\
 \n\
-don't forget to:
+don't forget to:\n\
 \n\
 * *change due date to project deadline*\n\
 * *add project image as cover of card*\n\
