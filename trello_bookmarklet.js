@@ -1,121 +1,70 @@
 (function(window){
   var $;
 
-  var get_est_jira_time = function() {
-      var jira_time = $('#tt_single_values_orig').text().trim();
-      var hours = jira_time.match(/[+-]?\d+\.\d+/g);
+  var readMeta = function (name) {
+    return $('meta[property="' + name + '"]').attr('content');
+  };
 
-      if (hours != null && hours.length > 0) {
-          return " (" + hours[0] + ")";
-      } else {
-          return "";
-      }
+  var getProjectBlurb = function() {
+    var blurb = $('.NS_project_profiles__blurb').text();
+    blurb = blurb || $('.NS_projects__hero_funding .h3').text();
+    return blurb.trim();
   }
 
   /* This is run after we've connected to Trello and selected a list */
   var run = function(Trello, idList) {
-    var name;
-    // Default description is the URL of the page we're looking at
-    var desc = location.href;
-
-    if(window.goBug) {
-
-      // We're looking at a FogBugz case
-      name = goBug.ixBug + ": " + goBug.sTitle
-
-    } else if ($("#issue_header_summary").length){
-
-      // We're looking at a JIRA case in an older JIRA installation
-      name = $("#key-val").text() + ": " + $("#issue_header_summary").text();
-
-    } else if ($("#jira").length){
-
-      // We're looking at a 5.1+ JIRA case
-      name = $("#key-val").text() + ": " + $("#summary-val").text() +  get_est_jira_time();
-
-    } else if ($("#show_issue").length) {
-
-      // We're looking at a GitHub issue
-      name = $("#show_issue .number strong").text() + " " + $("#show_issue .discussion-topic-title").text();
-
-    } else if ($("#all_commit_comments").length) {
-
-      // We're looking at a GitHub commit
-      name = $(".js-current-repository").text().trim() + ": " + $(".commit .commit-title").text().trim();
-      
-    } else if (jQuery('head meta[content=Redmine]').length) {
-      
-      // We're looking at a redmine issue
-      name = $("#content h2:first").text().trim() + ": " + $("#content h3:first").text().trim();
-
-    } else if ($('#header h1').length) {
-
-        // We're looking at a RequestTracker (RT) ticket
-        name = $('#header h1').text().trim();
-
-    } else if ($('h1 .hP').length){
-        
-        // we're looking at an email in Gmail
-        name = $('h1 .hP').text().trim();
-    
-    }
-    
-    else {
-        // use page title as card title, taking trello as a "read-later" tool
-        name = $.trim(document.title);
-        
-    }
-
-    // Get any selected text
-    var selection;
-
-    if(window.getSelection) {
-      selection = ""+window.getSelection();
-    } else if(document.selection && document.selection.createRange) {
-      selection = document.selection.createRange().text;
-    }
-
-    // If they've selected text, add it to the name/desc of the card
-    if(selection) {
-      if(!name) {
-        name = selection;
-      } else {
-        desc += "\n\n" + selection;
-      }
-    }
-    
-    name = name || 'Unknown page';
+    var name = readMeta('og:title') || 'Unknown page';
+    var desc = "[" + name + "](" + readMeta('og:url') + ")\n\
+==========\n\
+\n\
+" + getProjectBlurb() + "\n\
+----------\n\
+\n\
+**description**:\n\
+**lead:**\n\
+**cs:**\n\
+**creator email?:**\n\
+**etc:**\n\
+\n\
+**copy we've written**:;\n\
+```\n\
+PASTE COPY BETWEEN THE MARKS HERE
+\n\
+don't forget to:
+\n\
+* *change due date to project deadline*\n\
+* *add project image as cover of card*\n\
+* *checklists are for comms use ONLY*";
 
     // Create the card
-    if(name) {
-      Trello.post("lists/" + idList + "/cards", { 
-        name: name, 
-        desc: desc
-      }, function(card){
-        // Display a little notification in the upper-left corner with a link to the card
-        // that was just created
-        var $cardLink = $("<a>")
-        .attr({
-          href: card.url,
-          target: "card"
-        })
-        .text("Created a Trello Card")
-        .css({
-          position: "absolute",
-          left: 0,
-          top: 0,
-          padding: "4px",
-          border: "1px solid #000",
-          background: "#fff",
-          "z-index": 1e3
-        })
-        .appendTo("body")
-
-        setTimeout(function(){
-          $cardLink.fadeOut(3000);
-        }, 5000)
+    Trello.post("lists/" + idList + "/cards", {
+      name: name,
+      desc: desc,
+      pos: 'top'
+    }, function(card) {
+      // Display a little notification in the upper-left corner with a link to the card
+      // that was just created
+      var $cardLink = $("<a>")
+      .attr({
+        href: card.url,
+        target: "card"
       })
-    }
+      .text("Created a Trello Card")
+      .css({
+        position: "absolute",
+        left: 0,
+        top: 0,
+        padding: "4px",
+        border: "1px solid #000",
+        background: "#fff",
+        "z-index": 1e3
+      })
+      .appendTo("body");
+
+      setTimeout(function() {
+        $cardLink.fadeOut(3000);
+      }, 5000);
+    });
   }
 
   var storage = window.localStorage;
