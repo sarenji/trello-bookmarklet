@@ -176,7 +176,7 @@
 
     // Optionally show an input
     var $input = $("<input>")
-    .css({ 
+    .css({
       width: "100%",
       "margin-top": "8px"
     })
@@ -186,8 +186,8 @@
     // Add an "OK" button
     $("<div>")
     .text("OK")
-    .css({ 
-      width: "100%", 
+    .css({
+      width: "100%",
       "text-align": "center",
       border: "1px solid #000",
       background: "#eee",
@@ -196,7 +196,7 @@
     })
     .appendTo($div)
     .click(function(){
-      done($input.val());      
+      done($input.val());
     });
 
     return $div;
@@ -289,14 +289,14 @@
             })
           });
         });
-      }      
+      }
     },
     // Store the idList for later
     function(idList, next) {
       if(idList) {
         store(idListName, idList);
         next(Trello, idList);
-      }      
+      }
     },
     // Run the user portion
     run
